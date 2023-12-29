@@ -1,0 +1,29 @@
+<h1>Shortened URLs</h1>
+<button (click)="showAddUrlForm()">Add URL</button>
+
+<!-- Додана форма для введення нового URL -->
+<div *ngIf="showForm">
+  <form (submit)="addUrl()">
+    <label for="originalLink">Original URL:</label>
+    <input type="text" id="originalLink" [(ngModel)]="newUrl" required>
+    <button type="submit">Add</button>
+  </form>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Original URL</th>
+      <th>Shortened</th>
+      <th>Info</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let link of links">
+      <td>{{ link.id }}</td>
+      <td>{{ link.originalLink }}</td>
+      <td><a href="{{ link.shortenedLink }}" target="_blank">{{ link.shortenedLink }}</a></td>
+      <td><a href="{{link.info}}"></a>{{link.info}}</td>
+    </tr>
+  </tbody>
+</table>
