@@ -15,20 +15,35 @@ namespace Shortener.Controllers
             _shortenLinkGenerator = shortenLinkGenerator;
             _dbContext = dbContext;
         }
-        [HttpGet]
+        [HttpGet("List")]
         public IEnumerable<LinkModel> GetLinks()
         {
             return _dbContext.Links.ToList();
         }
 
-        [HttpPost("add")]
-        public IActionResult AddLink([FromBody] LinkModel newLink)
+        [HttpPost("Add")]
+        public IActionResult AddLink([FromBody] string originalLink)
         {
+            if (string.IsNullOrEmpty(originalLink))
+            {
+                return BadRequest("Original link cannot be empty");
+            }
 
+            // Генеруємо скорочене посилання
+            string shortenedLink = ShortenLinkGenerator.ShortenLink(originalLink);
+
+            // Створюємо новий об'єкт LinkModel
+            var newLink = new LinkModel
+            {
+                OriginalLink = originalLink,
+                ShortenedLink = shortenedLink
+            };
+
+            // Додаємо новий об'єкт до бази даних
             _dbContext.Links.Add(newLink);
             _dbContext.SaveChanges();
 
-            return Ok();
+            return Ok(newLink); // Повертаємо створений об'єкт, якщо потрібно
         }
 
         public IActionResult Redirect(string id)
